@@ -1,0 +1,13 @@
+{
+  "_comment": "OpenCode V2 does NOT read hooks/hooks.json. This file is documentation only — it mirrors the original Claude Code hooks.json for reference. The OpenCode port lives in opencode/plugins/hooks.js as a single V2 plugin using ctx.tool.hook() and ctx.session.hook() APIs.",
+  "_mapping": {
+    "PreToolUse": "ctx.tool.hook('execute.before', ...)",
+    "PostToolUse": "ctx.tool.hook('execute.after', ...)",
+    "SessionStart": "setup(ctx) runs once when the plugin loads",
+    "PreCompact": "ctx.session.hook('compaction', ...)",
+    "Stop": "event stream session.idle / session.end",
+    "SessionEnd": "event stream session.end / cleanup return from setup()"
+  },
+  "_openCode_plugin": "opencode/plugins/hooks.js",
+  "_openCode_plugin_register": "Copy to ~/.opencode/plugins/hooks.js for auto-load, or add to plugins[] in opencode.json"
+}

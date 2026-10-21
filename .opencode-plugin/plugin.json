@@ -1,0 +1,43 @@
+{
+  "name": "everything-open-code",
+  "description": "Complete collection of battle-tested OpenCode V2 configs — agents, skills, hooks, commands, and rules evolved over 10+ months of intensive daily use. Port of WorldFlowAI/everything-claude-code, rewritten for OpenCode V2 plugin API.",
+  "author": {
+    "name": "Affaan Mustafa",
+    "url": "https://x.com/affaanmustafa"
+  },
+  "homepage": "https://github.com/WorldFlowAI/everything-open-code",
+  "repository": "https://github.com/WorldFlowAI/everything-open-code",
+  "license": "MIT",
+  "version": "1.0.0-opencode",
+  "keywords": [
+    "opencode",
+    "agents",
+    "skills",
+    "plugins",
+    "hooks",
+    "commands",
+    "rules",
+    "tdd",
+    "code-review",
+    "security",
+    "workflow",
+    "automation",
+    "best-practices"
+  ],
+  "commands": "./commands",
+  "skills": "./skills",
+  "agents": "./agents",
+  "rules": "./rules",
+  "plugins": "./opencode/plugins",
+  "hooks": "./hooks",
+  "scripts": "./scripts",
+  "tests": "./tests",
+  "opencode": {
+    "pluginApi": "V2",
+    "configPath": "~/.config/opencode/opencode.json",
+    "skillsPath": "~/.opencode/skills/",
+    "pluginsPath": "~/.opencode/plugins/",
+    "rulesPath": "AGENTS.md",
+    "agentFormat": "frontmatter"
+  }
+}
