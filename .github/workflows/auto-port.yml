@@ -4,9 +4,10 @@ name: auto-port
 # into this OpenCode V2 mirror. Triggered by:
 #   - schedule (every 6 hours)
 #   - manual workflow dispatch
-#   - push to the source repo via repository_dispatch (if configured)
+#   - repository_dispatch (immediate, from source repo webhook)
 #
-# After porting, opens a PR so changes are reviewed before merging.
+# Pushes directly to main — no manual PR review needed.
+# Requires secret: AUTO_PORT_TOKEN (Personal Access Token with repo scope)
 
 on:
   schedule:
@@ -18,6 +19,8 @@ on:
         required: false
         default: false
         type: boolean
+  repository_dispatch:
+    types: [auto-port]
 
 jobs:
   detect:
@@ -29,9 +32,7 @@ jobs:
       - name: Check for new commits in source repo
         id: detect
         run: |
-          # Fetch the last commit SHA from the source repo
           HEAD=$(curl -s "https://api.github.com/repos/WorldFlowAI/everything-claude-code" | jq -r '.pushed_at')
-          # Compare against the last ported SHA stored in this repo
           LAST=$(cat .opencode/last-port-sha 2>/dev/null || echo "")
           if [ "$HEAD" != "$LAST" ]; then
             echo "commits=true" >> $GITHUB_OUTPUT
@@ -49,25 +50,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.AUTO_PORT_TOKEN }}
 
       - name: Checkout source repo
         uses: actions/checkout@v4
         with:
           repository: WorldFlowAI/everything-claude-code
           path: source
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTO_PORT_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-
-      - name: Install port script dependencies
-        run: npm install -g jq
 
       - name: Run port script
         run: node .opencode/scripts/port.js source . --force=${{ inputs.force }}
@@ -78,21 +77,17 @@ jobs:
           git add .opencode/last-port-sha
 
       - name: Commit and push
+        id: commit
         run: |
           git config user.name "everything-open-code[bot]"
           git config user.email "everything-open-code[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "auto-port: sync from everything-claude-code" || echo "Nothing to commit"
-          git push
-
-      - name: Create pull request
-        if: steps.commit.outputs.changed == 'true'
-        run: |
-          gh pr create \
-            --title "auto-port: sync from everything-claude-code" \
-            --body "Automated port of new commits from WorldFlowAI/everything-claude-code.
-            Review the diff, then merge to apply the OpenCode V2 conversion." \
-            --base main \
-            --head auto-port || echo "PR may already exist"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Nothing to commit"
+          else
+            git commit -m "auto-port: sync from everything-claude-code"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Committed and pushed"
+          fi
