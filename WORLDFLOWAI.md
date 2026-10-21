@@ -1,16 +1,35 @@
-# Everything Claude Code - WorldFlowAI Setup Guide
+# Everything OpenCode — Setup Guide
 
-Quick reference for using the everything-claude-code toolkit with synapse and arbiter projects.
+Complete OpenCode V2 toolkit: agents, skills, hooks, commands, and rules.
+Port of `WorldFlowAI/everything-claude-code`, rewritten for the OpenCode V2 plugin API.
 
-## Installed Components
+## What's Inside
 
 | Type | Items |
 |------|-------|
-| **Agents** | architect, build-error-resolver, code-reviewer, planner, refactor-cleaner, security-reviewer, tdd-guide |
-| **Commands** | /build-fix, /checkpoint, /code-review, /learn, /plan, /refactor-clean, /tdd, /verify |
-| **Skills** | backend-patterns, coding-standards, continuous-learning, eval-harness, security-review, verification-loop |
-| **Rules** | coding-style, git-workflow, security, testing |
-| **Hooks** | memory-persistence, strategic-compact, continuous-learning-activator |
+| **Agents** | architect, build-error-resolver, code-reviewer, doc-updater, e2e-runner, planner, refactor-cleaner, security-reviewer, tdd-guide |
+| **Skills** | backend-patterns, clickhouse-io, coding-standards, continuous-learning, eval-harness, frontend-patterns, project-guidelines-example, security-review, strategic-compact, tdd-workflow, verification-loop |
+| **Commands** | /build-fix, /checkpoint, /code-review, /e2e, /eval, /learn, /orchestrate, /plan, /refactor-clean, /setup-pm, /tdd, /test-coverage, /update-codemaps, /update-docs, /verify |
+| **Rules** | agents, coding-style, git-workflow, hooks, patterns, performance, security, testing |
+| **Hooks** | memory-persistence, strategic-compact (V2 plugin) |
+| **Plugins** | hooks.js — OpenCode V2 plugin (tool.execute.before/after, session hooks, event stream) |
+
+## Install
+
+```bash
+# 1. Clone this repo
+git clone https://github.com/cleaner55555/everything-open-code.git ~/Projects/everything-open-code
+cd ~/Projects/everything-open-code
+
+# 2. Copy the hooks plugin to OpenCode's auto-load directory
+mkdir -p ~/.opencode/plugins
+cp opencode/plugins/hooks.js ~/.opencode/plugins/hooks.js
+
+# 3. (Optional) Add to your global opencode.json:
+#    "plugin": ["~/.opencode/plugins/hooks.js"]
+```
+
+OpenCode auto-loads plugins from `~/.opencode/plugins/` — no config edit needed.
 
 ## Quick Start Workflows
 
@@ -24,10 +43,10 @@ Quick reference for using the everything-claude-code toolkit with synapse and ar
 5. /checkpoint        # Save progress state
 ```
 
-### Debugging Build Errors (Synapse/Rust)
+### Debugging Build Errors
 
 ```
-/build-fix            # Analyzes cargo errors and suggests fixes
+/build-fix            # Analyzes build errors and suggests fixes
 ```
 
 ### Code Quality Review
@@ -40,150 +59,74 @@ Quick reference for using the everything-claude-code toolkit with synapse and ar
 ### Learning & Memory
 
 ```
-/learn                # Extract reusable knowledge from current session
-/checkpoint           # Save session state for later resumption
+/learn               # Extract patterns mid-session
+/checkpoint          # Save verification state
 ```
 
-## Project-Specific Guidance
+## Agent Routing
 
-### Synapse (Rust Workspace)
-
-**Best agents for synapse:**
-- `build-error-resolver` - Rust compile errors can be cryptic
-- `architect` - Multi-crate workspace decisions
-- `security-reviewer` - LLM data handling requires scrutiny
-
-**Typical workflow:**
-```bash
-# In synapse directory
-claude
-
-# Plan feature
-> /plan
-
-# After implementation
-> cargo build 2>&1 | head -50  # If errors...
-> /build-fix
-
-# Before PR
-> /code-review
-> cargo +nightly fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
-```
-
-**Key synapse patterns:**
-- Use `parking_lot::{Mutex,RwLock}` not std
-- Max 100 char line width
-- Clippy pedantic + nursery enabled
-- Conventional commits required
-
-### Arbiter (ML/Python)
-
-**Best agents for arbiter:**
-- `tdd-guide` - ML code benefits from test-driven approach
-- `architect` - Pipeline architecture decisions
-- `eval-harness` - Model evaluation patterns
-
-**Typical workflow:**
-```bash
-# In arbiter directory
-claude
-
-# Plan experiment/feature
-> /plan
-
-# Test-driven development
-> /tdd
-
-# Validate
-> /verify
-```
-
-**Key arbiter patterns:**
-- Recall-focused metrics (safety critical)
-- PII/Org sensitivity handling
-- Model lifecycle management
-
-## Hooks (Automatic)
-
-These run automatically - no action needed:
-
-| Hook | When | What it does |
-|------|------|--------------|
-| SessionStart | New session | Loads recent session context |
-| PreCompact | Before /compact | Saves state before context reduction |
-| Stop | Session end | Persists learnings, runs continuous-learning |
-| PreToolUse (Edit/Write) | Every ~50 edits | Suggests running /compact |
-
-### Memory Persistence
-
-Sessions automatically save state to `~/.opencode/sessions/`. To resume:
-```
-# Start new session, previous context loads automatically
-claude
-
-# Or explicitly reference a session file
-> @~/.opencode/sessions/2026-01-23-feature-x.tmp
-```
-
-### Strategic Compaction
-
-After ~50 tool calls, you'll see a suggestion to run `/compact`. This helps maintain context quality during long sessions.
-
-## When to Use Each Agent
-
-| Situation | Agent/Command |
-|-----------|---------------|
-| Planning new feature | `/plan` → planner agent |
-| Designing system architecture | architect agent |
-| Fixing Rust compile errors | `/build-fix` → build-error-resolver |
-| Pre-PR quality check | `/code-review` → code-reviewer |
-| Security-sensitive changes | security-reviewer agent |
+| Task | Agent |
+|------|-------|
+| Architecture decisions | `architect` |
+| Feature planning | `planner` |
+| Test-driven development | `tdd-guide` |
+| Security-sensitive changes | `security-reviewer` |
 | Writing tests first | `/tdd` → tdd-guide agent |
 | Cleaning up code | `/refactor-clean` → refactor-cleaner |
 | Validating changes | `/verify` → verification-loop skill |
 
-## Updating
+## Hooks
 
-```bash
-cd ~/dev/worldflowai/everything-claude-code
-git pull
+The hooks plugin (`~/.opencode/plugins/hooks.js`) provides:
 
-# Symlinks auto-update, but hooks need re-copy if changed:
-cp -r hooks/memory-persistence ~/.opencode/hooks/
-cp -r hooks/strategic-compact ~/.opencode/hooks/
-chmod +x ~/.opencode/hooks/*/*.sh
-```
+- **Session start** — loads previous context, reports package manager
+- **Session end** — persists session state to `~/.opencode/sessions/`
+- **Pre-tool-use** — blocks dev servers outside tmux, warns on `git push`
+- **Post-tool-use** — logs PR URLs, warns on `console.log` in JS/TS
+- **Pre-compact** — logs compaction events
+- **Write guard** — blocks creation of stray `.md`/`.txt` files
 
 ## File Locations
 
 ```
-~/dev/worldflowai/everything-claude-code/   # Source repo
-~/.opencode/agents/                            # Agent symlinks
-~/.opencode/commands/                          # Command symlinks
-~/.opencode/skills/                            # Skill symlinks
-~/.opencode/rules/                             # Rule symlinks
-~/.opencode/hooks/                             # Hook scripts (copied)
-~/.opencode/hooks.json                         # Hook configuration
-~/.opencode/sessions/                          # Session memory files
+~/Projects/everything-open-code/   # Source repo
+~/.opencode/plugins/hooks.js      # Hooks plugin (auto-loaded)
+~/.opencode/sessions/             # Session memory files
+~/.opencode/skills/               # Skill directory
+~/.config/opencode/opencode.json  # Global config
+~/.local/share/opencode/opencode.db  # Session database (SQLite)
+```
+
+## Updating
+
+```bash
+cd ~/Projects/everything-open-code
+git pull
+
+# Re-copy the hooks plugin after changes:
+cp opencode/plugins/hooks.js ~/.opencode/plugins/hooks.js
 ```
 
 ## Troubleshooting
 
-**Commands not working:**
+**Plugin not loading:**
 ```bash
-ls -la ~/.opencode/commands/  # Check symlinks exist and point correctly
+ls ~/.opencode/plugins/hooks.js  # Verify file exists
+tail -50 ~/.local/share/opencode/log/opencode.log  # Check for errors
 ```
 
 **Hooks not firing:**
 ```bash
-cat ~/.opencode/hooks.json    # Verify config is valid JSON
-ls -la ~/.opencode/hooks/     # Check scripts are executable
+grep -i "everything-open-code" ~/.local/share/opencode/log/opencode.log
 ```
 
-**To reset installation:**
+**Commands not working:**
 ```bash
-rm -rf ~/.opencode/agents ~/.opencode/commands ~/.opencode/rules
-rm -rf ~/.opencode/hooks/memory-persistence ~/.opencode/hooks/strategic-compact
-rm ~/.opencode/hooks.json
-# Then re-run installation
+ls ~/.opencode/skills/  # Verify skills are present
+```
+
+**To reset:**
+```bash
+rm ~/.opencode/plugins/hooks.js
+rm -rf ~/.opencode/sessions
 ```
