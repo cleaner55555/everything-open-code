@@ -1,6 +1,6 @@
 name: auto-port
 
-# Automatically ports new commits from WorldFlowAI/everything-claude-code
+# Automatically ports new commits from affaan-m/ECC
 # into this OpenCode V2 mirror. Triggered by:
 #   - schedule (every 6 hours)
 #   - manual workflow dispatch
@@ -32,7 +32,7 @@ jobs:
       - name: Check for new commits in source repo
         id: detect
         run: |
-          HEAD=$(curl -s "https://api.github.com/repos/WorldFlowAI/everything-claude-code" | jq -r '.pushed_at')
+          HEAD=$(curl -s "https://api.github.com/repos/affaan-m/ECC" | jq -r '.pushed_at')
           LAST=$(cat .opencode/last-port-sha 2>/dev/null || echo "")
           if [ "$HEAD" != "$LAST" ]; then
             echo "commits=true" >> $GITHUB_OUTPUT
@@ -59,7 +59,7 @@ jobs:
       - name: Checkout source repo
         uses: actions/checkout@v4
         with:
-          repository: WorldFlowAI/everything-claude-code
+          repository: affaan-m/ECC
           path: source
           token: ${{ secrets.AUTO_PORT_TOKEN }}
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Update last-port tracking
         run: |
-          curl -s "https://api.github.com/repos/WorldFlowAI/everything-claude-code" | jq -r '.pushed_at' > .opencode/last-port-sha
+          curl -s "https://api.github.com/repos/affaan-m/ECC" | jq -r '.pushed_at' > .opencode/last-port-sha
           git add .opencode/last-port-sha
 
       - name: Commit and push
@@ -86,7 +86,7 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
             echo "Nothing to commit"
           else
-            git commit -m "auto-port: sync from everything-claude-code"
+            git commit -m "auto-port: sync from affaan-m/ECC"
             git push
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Committed and pushed"

@@ -1,4 +1,4 @@
-# Everything OpenCode - WorldFlowAI Setup Guide
+# Everything OpenCode - affaan-m Setup Guide
 
 Quick reference for using the everything-open-code toolkit with synapse and arbiter projects.
 

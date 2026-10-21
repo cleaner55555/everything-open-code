@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "generatedBy": "ecc-tools",
+  "profile": "full",
+  "sharedSkills": [
+    ".agents/skills/ecc-conventions/SKILL.md"
+  ],
+  "commandFiles": [
+    ".opencode/commands/database-migration.md",
+    ".opencode/commands/feature-development.md",
+    ".opencode/commands/add-language-rules.md"
+  ],
+  "updatedAt": "2026-03-20T12:07:36.496Z"
+}
