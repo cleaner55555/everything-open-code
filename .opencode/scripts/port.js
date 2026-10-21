@@ -27,7 +27,7 @@ if (!fs.existsSync(SRC)) {
   process.exit(1);
 }
 
-const SKIP_DIRS = new Set([".git", ".claude", ".claude-plugin", "examples", "node_modules"]);
+const SKIP_DIRS = new Set([".git", ".opencode-plugin", "examples", "node_modules"]);
 const SKIP_FILES = new Set([".gitignore", ".DS_Store"]);
 
 const REPLACEMENTS = [
@@ -58,6 +58,15 @@ function walk(dir, base = dir) {
   return out;
 }
 
+// Map .claude/ paths to .opencode/ so the source's Claude Code
+// content lands in the OpenCode folder without overwriting our
+// own plugins/scripts.
+function targetRel(rel) {
+  return rel.startsWith(".claude" + path.sep) || rel === ".claude"
+    ? ".opencode" + rel.slice(".claude".length)
+    : rel;
+}
+
 function convert(content) {
   let c = content;
   for (const [old, neu] of REPLACEMENTS) c = c.split(old).join(neu);
@@ -66,7 +75,7 @@ function convert(content) {
 
 function copyFile(rel) {
   const src = path.join(SRC, rel);
-  const tgt = path.join(TGT, rel);
+  const tgt = path.join(TGT, targetRel(rel));
   let content;
   try {
     content = fs.readFileSync(src, "utf8");
@@ -84,7 +93,7 @@ const srcFiles = walk(SRC);
 let copied = 0;
 for (const rel of srcFiles) {
   const src = path.join(SRC, rel);
-  const tgt = path.join(TGT, rel);
+  const tgt = path.join(TGT, targetRel(rel));
   let needsCopy = true;
   if (fs.existsSync(tgt)) {
     try {
