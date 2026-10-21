@@ -1,12 +1,12 @@
-# Everything Claude Code
+# Everything OpenCode
 
-[![Stars](https://img.shields.io/github/stars/affaan-m/everything-claude-code?style=flat)](https://github.com/affaan-m/everything-claude-code/stargazers)
+[![Stars](https://img.shields.io/github/stars/affaan-m/everything-open-code?style=flat)](https://github.com/affaan-m/everything-open-code/stargazers)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Shell](https://img.shields.io/badge/-Shell-4EAA25?logo=gnu-bash&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Markdown](https://img.shields.io/badge/-Markdown-000000?logo=markdown&logoColor=white)
 
-**The complete collection of Claude Code configs from an Anthropic hackathon winner.**
+**The complete collection of OpenCode configs from an Anthropic hackathon winner.**
 
 Production-ready agents, skills, hooks, commands, rules, and MCP configurations evolved over 10+ months of intensive daily use building real products.
 
@@ -20,12 +20,12 @@ This repo is the raw code only. The guides explain everything.
 <tr>
 <td width="50%">
 <a href="https://x.com/affaanmustafa/status/2012378465664745795">
-<img src="https://github.com/user-attachments/assets/1a471488-59cc-425b-8345-5245c7efbcef" alt="The Shorthand Guide to Everything Claude Code" />
+<img src="https://github.com/user-attachments/assets/1a471488-59cc-425b-8345-5245c7efbcef" alt="The Shorthand Guide to Everything OpenCode" />
 </a>
 </td>
 <td width="50%">
 <a href="https://x.com/affaanmustafa/status/2014040193557471352">
-<img src="https://github.com/user-attachments/assets/c9ca43bc-b149-427f-b551-af6840c368f0" alt="The Longform Guide to Everything Claude Code" />
+<img src="https://github.com/user-attachments/assets/c9ca43bc-b149-427f-b551-af6840c368f0" alt="The Longform Guide to Everything OpenCode" />
 </a>
 </td>
 </tr>
@@ -54,7 +54,7 @@ This plugin now fully supports **Windows, macOS, and Linux**. All hooks and scri
 
 The plugin automatically detects your preferred package manager (npm, pnpm, yarn, or bun) with the following priority:
 
-1. **Environment variable**: `CLAUDE_PACKAGE_MANAGER`
+1. **Environment variable**: `OPENCODE_PACKAGE_MANAGER`
 2. **Project config**: `.opencode/package-manager.json`
 3. **package.json**: `packageManager` field
 4. **Lock file**: Detection from package-lock.json, yarn.lock, pnpm-lock.yaml, or bun.lockb
@@ -65,7 +65,7 @@ To set your preferred package manager:
 
 ```bash
 # Via environment variable
-export CLAUDE_PACKAGE_MANAGER=pnpm
+export OPENCODE_PACKAGE_MANAGER=pnpm
 
 # Via global config
 node scripts/setup-package-manager.js --global pnpm
@@ -77,16 +77,16 @@ node scripts/setup-package-manager.js --project bun
 node scripts/setup-package-manager.js --detect
 ```
 
-Or use the `/setup-pm` command in Claude Code.
+Or use the `/setup-pm` command in OpenCode.
 
 ---
 
 ## What's Inside
 
-This repo is a **Claude Code plugin** - install it directly or copy components manually.
+This repo is a **OpenCode plugin** - install it directly or copy components manually.
 
 ```
-everything-claude-code/
+everything-open-code/
 |-- .opencode-plugin/   # Plugin and marketplace manifests
 |   |-- plugin.json         # Plugin metadata and component paths
 |   |-- marketplace.json    # Marketplace catalog for /plugin marketplace add
@@ -176,14 +176,14 @@ everything-claude-code/
 
 ### Option 1: Install as Plugin (Recommended)
 
-The easiest way to use this repo - install as a Claude Code plugin:
+The easiest way to use this repo - install as a OpenCode plugin:
 
 ```bash
 # Add this repo as a marketplace
-/plugin marketplace add affaan-m/everything-claude-code
+/plugin marketplace add affaan-m/everything-open-code
 
 # Install the plugin
-/plugin install everything-claude-code@everything-claude-code
+/plugin install everything-open-code@everything-open-code
 ```
 
 Or add directly to your `~/.opencode/settings.json`:
@@ -191,15 +191,15 @@ Or add directly to your `~/.opencode/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "everything-claude-code": {
+    "everything-open-code": {
       "source": {
         "source": "github",
-        "repo": "affaan-m/everything-claude-code"
+        "repo": "affaan-m/everything-open-code"
       }
     }
   },
   "enabledPlugins": {
-    "everything-claude-code@everything-claude-code": true
+    "everything-open-code@everything-open-code": true
   }
 }
 ```
@@ -214,19 +214,19 @@ If you prefer manual control over what's installed:
 
 ```bash
 # Clone the repo
-git clone https://github.com/affaan-m/everything-claude-code.git
+git clone https://github.com/affaan-m/everything-open-code.git
 
 # Copy agents to your Claude config
-cp everything-claude-code/agents/*.md ~/.opencode/agents/
+cp everything-open-code/agents/*.md ~/.opencode/agents/
 
 # Copy rules
-cp everything-claude-code/rules/*.md ~/.opencode/rules/
+cp everything-open-code/rules/*.md ~/.opencode/rules/
 
 # Copy commands
-cp everything-claude-code/commands/*.md ~/.opencode/commands/
+cp everything-open-code/commands/*.md ~/.opencode/commands/
 
 # Copy skills
-cp -r everything-claude-code/skills/* ~/.opencode/skills/
+cp -r everything-open-code/skills/* ~/.opencode/skills/
 ```
 
 #### Add hooks to settings.json
@@ -339,7 +339,7 @@ Please contribute! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Background
 
-I've been using Claude Code since the experimental rollout. Won the Anthropic x Forum Ventures hackathon in Sep 2025 building [zenith.chat](https://zenith.chat) with [@DRodriguezFX](https://x.com/DRodriguezFX) - entirely using Claude Code.
+I've been using OpenCode since the experimental rollout. Won the Anthropic x Forum Ventures hackathon in Sep 2025 building [zenith.chat](https://zenith.chat) with [@DRodriguezFX](https://x.com/DRodriguezFX) - entirely using OpenCode.
 
 These configs are battle-tested across multiple production applications.
 
@@ -370,14 +370,14 @@ These configs work for my workflow. You should:
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=affaan-m/everything-claude-code&type=Date)](https://star-history.com/#affaan-m/everything-claude-code&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=affaan-m/everything-open-code&type=Date)](https://star-history.com/#affaan-m/everything-open-code&Date)
 
 ---
 
 ## Links
 
-- **Shorthand Guide (Start Here):** [The Shorthand Guide to Everything Claude Code](https://x.com/affaanmustafa/status/2012378465664745795)
-- **Longform Guide (Advanced):** [The Longform Guide to Everything Claude Code](https://x.com/affaanmustafa/status/2014040193557471352)
+- **Shorthand Guide (Start Here):** [The Shorthand Guide to Everything OpenCode](https://x.com/affaanmustafa/status/2012378465664745795)
+- **Longform Guide (Advanced):** [The Longform Guide to Everything OpenCode](https://x.com/affaanmustafa/status/2014040193557471352)
 - **Follow:** [@affaanmustafa](https://x.com/affaanmustafa)
 - **zenith.chat:** [zenith.chat](https://zenith.chat)
 

@@ -1,6 +1,6 @@
-# Contributing to Everything Claude Code
+# Contributing to Everything OpenCode
 
-Thanks for wanting to contribute. This repo is meant to be a community resource for Claude Code users.
+Thanks for wanting to contribute. This repo is meant to be a community resource for OpenCode users.
 
 ## What We're Looking For
 
@@ -60,8 +60,8 @@ New or improved MCP server configs:
 ### 1. Fork the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/everything-claude-code.git
-cd everything-claude-code
+git clone https://github.com/YOUR_USERNAME/everything-open-code.git
+cd everything-open-code
 ```
 
 ### 2. Create a branch
@@ -137,7 +137,7 @@ Detailed instructions...
 
 ### 5. Test your contribution
 
-Make sure your config works with Claude Code before submitting.
+Make sure your config works with OpenCode before submitting.
 
 ### 6. Submit a PR
 

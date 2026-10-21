@@ -210,24 +210,24 @@ function runTests() {
   })) passed++; else failed++;
 
   if (test('respects environment variable', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
     try {
-      process.env.CLAUDE_PACKAGE_MANAGER = 'yarn';
+      process.env.OPENCODE_PACKAGE_MANAGER = 'yarn';
       const result = pm.getPackageManager();
       assert.strictEqual(result.name, 'yarn');
       assert.strictEqual(result.source, 'environment');
     } finally {
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       } else {
-        delete process.env.CLAUDE_PACKAGE_MANAGER;
+        delete process.env.OPENCODE_PACKAGE_MANAGER;
       }
     }
   })) passed++; else failed++;
 
   if (test('detects from lock file in project', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
-    delete process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
+    delete process.env.OPENCODE_PACKAGE_MANAGER;
 
     const testDir = createTestDir();
     try {
@@ -238,7 +238,7 @@ function runTests() {
     } finally {
       cleanupTestDir(testDir);
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       }
     }
   })) passed++; else failed++;
@@ -247,31 +247,31 @@ function runTests() {
   console.log('\ngetRunCommand:');
 
   if (test('returns correct install command', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
     try {
-      process.env.CLAUDE_PACKAGE_MANAGER = 'pnpm';
+      process.env.OPENCODE_PACKAGE_MANAGER = 'pnpm';
       const cmd = pm.getRunCommand('install');
       assert.strictEqual(cmd, 'pnpm install');
     } finally {
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       } else {
-        delete process.env.CLAUDE_PACKAGE_MANAGER;
+        delete process.env.OPENCODE_PACKAGE_MANAGER;
       }
     }
   })) passed++; else failed++;
 
   if (test('returns correct test command', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
     try {
-      process.env.CLAUDE_PACKAGE_MANAGER = 'npm';
+      process.env.OPENCODE_PACKAGE_MANAGER = 'npm';
       const cmd = pm.getRunCommand('test');
       assert.strictEqual(cmd, 'npm test');
     } finally {
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       } else {
-        delete process.env.CLAUDE_PACKAGE_MANAGER;
+        delete process.env.OPENCODE_PACKAGE_MANAGER;
       }
     }
   })) passed++; else failed++;
@@ -280,31 +280,31 @@ function runTests() {
   console.log('\ngetExecCommand:');
 
   if (test('returns correct exec command for npm', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
     try {
-      process.env.CLAUDE_PACKAGE_MANAGER = 'npm';
+      process.env.OPENCODE_PACKAGE_MANAGER = 'npm';
       const cmd = pm.getExecCommand('prettier', '--write .');
       assert.strictEqual(cmd, 'npx prettier --write .');
     } finally {
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       } else {
-        delete process.env.CLAUDE_PACKAGE_MANAGER;
+        delete process.env.OPENCODE_PACKAGE_MANAGER;
       }
     }
   })) passed++; else failed++;
 
   if (test('returns correct exec command for pnpm', () => {
-    const originalEnv = process.env.CLAUDE_PACKAGE_MANAGER;
+    const originalEnv = process.env.OPENCODE_PACKAGE_MANAGER;
     try {
-      process.env.CLAUDE_PACKAGE_MANAGER = 'pnpm';
+      process.env.OPENCODE_PACKAGE_MANAGER = 'pnpm';
       const cmd = pm.getExecCommand('eslint', '.');
       assert.strictEqual(cmd, 'pnpm dlx eslint .');
     } finally {
       if (originalEnv !== undefined) {
-        process.env.CLAUDE_PACKAGE_MANAGER = originalEnv;
+        process.env.OPENCODE_PACKAGE_MANAGER = originalEnv;
       } else {
-        delete process.env.CLAUDE_PACKAGE_MANAGER;
+        delete process.env.OPENCODE_PACKAGE_MANAGER;
       }
     }
   })) passed++; else failed++;
@@ -337,7 +337,7 @@ function runTests() {
   if (test('returns informative prompt', () => {
     const prompt = pm.getSelectionPrompt();
     assert.ok(prompt.includes('Available package managers'), 'Should list available managers');
-    assert.ok(prompt.includes('CLAUDE_PACKAGE_MANAGER'), 'Should mention env var');
+    assert.ok(prompt.includes('OPENCODE_PACKAGE_MANAGER'), 'Should mention env var');
   })) passed++; else failed++;
 
   // Summary

@@ -145,7 +145,7 @@ async function runTests() {
 
   if (await asyncTest('runs without error', async () => {
     const result = await runScript(path.join(scriptsDir, 'suggest-compact.js'), '', {
-      CLAUDE_SESSION_ID: 'test-session-' + Date.now()
+      OPENCODE_SESSION_ID: 'test-session-' + Date.now()
     });
     assert.strictEqual(result.code, 0, `Exit code should be 0, got ${result.code}`);
   })) passed++; else failed++;
@@ -156,7 +156,7 @@ async function runTests() {
     // Run multiple times
     for (let i = 0; i < 3; i++) {
       await runScript(path.join(scriptsDir, 'suggest-compact.js'), '', {
-        CLAUDE_SESSION_ID: sessionId
+        OPENCODE_SESSION_ID: sessionId
       });
     }
 
@@ -177,7 +177,7 @@ async function runTests() {
     fs.writeFileSync(counterFile, '49');
 
     const result = await runScript(path.join(scriptsDir, 'suggest-compact.js'), '', {
-      CLAUDE_SESSION_ID: sessionId,
+      OPENCODE_SESSION_ID: sessionId,
       COMPACT_THRESHOLD: '50'
     });
 

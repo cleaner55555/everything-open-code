@@ -1,5 +1,5 @@
 /**
- * Cross-platform utility functions for Claude Code hooks and scripts
+ * Cross-platform utility functions for OpenCode hooks and scripts
  * Works on Windows, macOS, and Linux
  */
 
@@ -21,7 +21,7 @@ function getHomeDir() {
 }
 
 /**
- * Get the OpenCode config directory
+ * Get the Claude config directory
  */
 function getOpenCodeDir() {
   return path.join(getHomeDir(), '.opencode');
@@ -177,7 +177,7 @@ async function readStdinJson() {
 }
 
 /**
- * Log to stderr (visible to user in Claude Code)
+ * Log to stderr (visible to user in OpenCode)
  */
 function log(message) {
   console.error(message);
@@ -335,7 +335,7 @@ module.exports = {
 
   // Directories
   getHomeDir,
-  getClaudeDir,
+  getOpenCodeDir,
   getSessionsDir,
   getLearnedSkillsDir,
   getTempDir,

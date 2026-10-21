@@ -1,0 +1,98 @@
+name: auto-port
+
+# Automatically ports new commits from WorldFlowAI/everything-claude-code
+# into this OpenCode V2 mirror. Triggered by:
+#   - schedule (every 6 hours)
+#   - manual workflow dispatch
+#   - push to the source repo via repository_dispatch (if configured)
+#
+# After porting, opens a PR so changes are reviewed before merging.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force re-port even if no new commits"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      new_commits: ${{ steps.detect.outputs.commits }}
+      head_sha: ${{ steps.detect.outputs.head }}
+    steps:
+      - name: Check for new commits in source repo
+        id: detect
+        run: |
+          # Fetch the last commit SHA from the source repo
+          HEAD=$(curl -s "https://api.github.com/repos/WorldFlowAI/everything-claude-code" | jq -r '.pushed_at')
+          # Compare against the last ported SHA stored in this repo
+          LAST=$(cat .opencode/last-port-sha 2>/dev/null || echo "")
+          if [ "$HEAD" != "$LAST" ]; then
+            echo "commits=true" >> $GITHUB_OUTPUT
+            echo "head=$HEAD" >> $GITHUB_OUTPUT
+            echo "New commits detected (source pushed_at: $HEAD)"
+          else
+            echo "commits=false" >> $GITHUB_OUTPUT
+            echo "head=$HEAD" >> $GITHUB_OUTPUT
+            echo "No new commits — skipping port"
+          fi
+
+  port:
+    needs: detect
+    if: needs.detect.outputs.new_commits == 'true' || inputs.force == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+        with:
+          repository: WorldFlowAI/everything-claude-code
+          path: source
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install port script dependencies
+        run: npm install -g jq
+
+      - name: Run port script
+        run: node .opencode/scripts/port.js source . --force=${{ inputs.force }}
+
+      - name: Update last-port tracking
+        run: |
+          curl -s "https://api.github.com/repos/WorldFlowAI/everything-claude-code" | jq -r '.pushed_at' > .opencode/last-port-sha
+          git add .opencode/last-port-sha
+
+      - name: Commit and push
+        run: |
+          git config user.name "everything-open-code[bot]"
+          git config user.email "everything-open-code[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "auto-port: sync from everything-claude-code" || echo "Nothing to commit"
+          git push
+
+      - name: Create pull request
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          gh pr create \
+            --title "auto-port: sync from everything-claude-code" \
+            --body "Automated port of new commits from WorldFlowAI/everything-claude-code.
+            Review the diff, then merge to apply the OpenCode V2 conversion." \
+            --base main \
+            --head auto-port || echo "PR may already exist"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

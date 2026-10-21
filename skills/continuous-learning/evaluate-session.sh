@@ -1,6 +1,6 @@
 #!/bin/bash
 # Continuous Learning - Session Evaluator
-# Runs on Stop hook to extract reusable patterns from Claude Code sessions
+# Runs on Stop hook to extract reusable patterns from OpenCode sessions
 #
 # Why Stop hook instead of UserPromptSubmit:
 # - Stop runs once at session end (lightweight)
@@ -39,7 +39,7 @@ fi
 # Ensure learned skills directory exists
 mkdir -p "$LEARNED_SKILLS_PATH"
 
-# Get transcript path from environment (set by Claude Code)
+# Get transcript path from environment (set by OpenCode)
 transcript_path="${OPENCODE_TRANSCRIPT_PATH:-}"
 
 if [ -z "$transcript_path" ] || [ ! -f "$transcript_path" ]; then

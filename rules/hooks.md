@@ -28,7 +28,7 @@ Use with caution:
 - Enable for trusted, well-defined plans
 - Disable for exploratory work
 - Never use dangerously-skip-permissions flag
-- Configure `allowedTools` in `~/.config/opencode/opencode.json` instead
+- Configure `allowedTools` in `~/.opencode.json` instead
 
 ## TodoWrite Best Practices
 
