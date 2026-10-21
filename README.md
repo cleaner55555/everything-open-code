@@ -368,6 +368,20 @@ These configs work for my workflow. You should:
 
 ---
 
+## Auto-sync from upstream
+
+This repo auto-syncs with `WorldFlowAI/everything-claude-code`:
+
+- **GitHub Actions** runs every 6 hours (`.github/workflows/auto-port.yml`)
+- **Manual run**: Actions → "auto-port" → Run workflow
+- **Local run**: `node .opencode/scripts/port.js <source-dir> <target-dir>`
+
+The port script applies these conversions:
+- `.claude/` → `.opencode/`, `CLAUDE.md` → `AGENTS.md`
+- `getClaudeDir` → `getOpenCodeDir`, `Claude Code` → `OpenCode`
+- `CLAUDE_TRANSCRIPT_PATH` → `OPENCODE_TRANSCRIPT_PATH`
+- `everything-claude-code` → `everything-open-code`
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=affaan-m/everything-open-code&type=Date)](https://star-history.com/#affaan-m/everything-open-code&Date)
