@@ -52,12 +52,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.AUTO_PORT_TOKEN }}
 
       - name: Checkout source repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: affaan-m/ECC
           path: source
